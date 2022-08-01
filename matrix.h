@@ -4,7 +4,11 @@
 #include<vector>
 using namespace std;
 
-double det(const vector<vector<double> >& a);                                             //行列式
+vector<vector<double> > eye(int n, int m);
+
+vector<vector<double> > diag(vector<double> a);
+
+double det(vector<vector<double> > a);                                             //行列式
 
 vector<vector<double> > mul(const vector<vector<double> >& a, const vector<vector<double> >& b);//两矩阵相乘
 

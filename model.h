@@ -3,10 +3,20 @@
 #include<iostream>
 #include<vector>
 #include"matrix.h"
+
+double accuracy(vector<int> true_labels, vector<int> pred_labels);//精确率
+
+vector<double> precision(vector<int> true_labels, vector<int> pred_labels);//查准率
+
+vector<double> recall(vector<int> true_labels, vector<int> pred_labels);//查全率
+
+double ROC(vector<int> true_labels, vector<int> pred_labels);//ROC曲线
+
 class LDA//二分类
 {
 private:
 	vector<double> w;       //投影向量即模型参数
+	double threshold;       //分类阈值
 public:
 	LDA() {};
 	void set_para(const vector<double>& para);                   //设置模型参数

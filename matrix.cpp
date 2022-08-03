@@ -4,7 +4,7 @@
 #include<algorithm>
 using namespace std;
 
-vector<vector<double> > eye(int n, int m)
+vector<vector<double> > eye(const int& n, const int& m)
 {
 	vector<vector<double> > x(n,vector<double>(m));
 	int mi = min(n, m);
@@ -15,7 +15,7 @@ vector<vector<double> > eye(int n, int m)
 	return x;
 }
 
-vector<vector<double> > diag(vector<double> a)
+vector<vector<double> > diag(const vector<double>& a)
 {
 	int siz = a.size();
 	vector<vector<double> > x(siz, vector<double>(siz));
@@ -25,6 +25,29 @@ vector<vector<double> > diag(vector<double> a)
 	}
 	return x;
 }
+
+vector<vector<double> > T(const vector<vector<double> >& a)
+{
+	int n = a[0].size(), m = a.size();
+	vector<vector<double> > x(n,vector<double>(m, 0));
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < m; j++)
+		{
+			x[i][j] = a[j][i];
+		}
+	}
+	return x;
+}
+
+vector<vector<double> > repeat(const vector<double>& a, const int& n, const int& axis)
+{
+	vector<vector<double> > x(n, vector<double>(a.begin(), a.end()));
+	if (axis == 1)
+		x = T(x);
+	return x;
+}
+
 
 double det(vector<vector<double> > a)
 {
@@ -78,7 +101,7 @@ vector<vector<double> > mul(const vector<vector<double> >& a, const vector<vecto
 	return x;
 }
 
-vector<vector<double> > mul(const vector<vector<double> >& a, double b)
+vector<vector<double> > mul(const vector<vector<double> >& a, const double& b)
 {
 	vector<vector<double> > x = a;
 	int n = x.size(), m = x[0].size();
@@ -92,7 +115,7 @@ vector<vector<double> > mul(const vector<vector<double> >& a, double b)
 	return x;
 }
 
-vector<vector<double> > mul(double b, const vector<vector<double> >& a)
+vector<vector<double> > mul(const double& b, const vector<vector<double> >& a)
 {
 	vector<vector<double> > x = a;
 	int n = x.size(), m = x[0].size();
@@ -117,6 +140,48 @@ vector<vector<double> > add(const vector<vector<double> >& a, const vector<vecto
 			x[i][j] = a[i][j] + b[i][j];
 		}
 	}
+	return x;
+}
+
+vector<bool> operator&&(const vector<bool>& a, const vector<bool>& b)
+{
+	int n = a.size();
+	vector<bool> x(n);
+	for (int i = 0; i < n; i++)
+	{
+		x[i] = (a[i] && b[i]);
+	}
+	return x;
+}
+
+int sum(const vector<bool>& a)
+{
+	int n = a.size();
+	int x = 0;
+	for (int i = 0; i < n; i++)
+	{
+		if (a[i])
+			x++;
+	}
+	return x;
+}
+
+vector<vector<double> > row(const vector<vector<double> >& a, const vector<bool>& b)
+{
+	vector<vector<double> > x;
+	int n = a.size();
+	for (int i = 0; i < n; i++)
+	{
+		if (b[i])
+			x.push_back(a[i]);
+	}
+	return x;
+}
+
+vector<vector<double> > col(const vector<vector<double> >& a, const vector<bool>& b)
+{
+	vector<vector<double> > A = T(a);
+	vector<vector<double> > x = T(row(A, b));
 	return x;
 }
 
@@ -181,4 +246,56 @@ vector<vector<double> > inv(const vector<vector<double> >& a)
 		}
 	}
 	return x;
+}
+
+vector<double> mean(const vector<vector<double> >& a, int axis)
+{
+	if (axis == 0)
+	{
+		int m = a[0].size(), n=a.size();
+		vector<double> x(m);
+		for (int j = 0; j < m; j++)
+		{
+			for (int i = 0; i < n; i++)
+			{
+				x[j] += a[i][j];
+			}
+			x[j] /= n;
+		}
+		return x;
+	}
+	else
+	{
+		int m = a[0].size(), n = a.size();
+		vector<double> x(n);
+		for (int i = 0; i < n; i++)
+		{
+			for (int j = 0; j < m; j++)
+			{
+				x[i] += a[i][j];
+			}
+			x[i] /= m;
+		}
+		return x;
+	}
+}
+
+vector<vector<double> > cov(const vector<vector<double> >& a, bool colvar)
+{
+	if (colvar)
+	{
+		vector<double> b = mean(a);
+		vector<vector<double> > avg = repeat(b, a.size());
+		vector<vector<double> > x = add(a, mul(avg, -1));
+		vector<vector<double> > var = mul(T(x), x);
+		return var;
+	}
+	else
+	{
+		vector<double> b = mean(a, 1);
+		vector<vector<double> > avg = repeat(b, a.size(), 1);
+		vector<vector<double> > x = add(a, mul(avg, -1));
+		vector<vector<double> > var = mul(x, T(x));
+		return var;
+	}
 }

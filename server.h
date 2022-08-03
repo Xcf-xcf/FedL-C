@@ -26,6 +26,7 @@ public:
 		batch_size.assign(Batch_size.begin(), Batch_size.end());
 		k = K;
 		model = Model;
+		//创建进程
 	}
 	bool  select_clt(vector<string>& clt);                                 //使用随机数选择客户端进行训练，clt存储所选客户端id。
 	bool  send_para(string clt);                                           //通过模型指针调用模型中的获取参数的函数，并向id为clt的客户端发送聚合后的参数

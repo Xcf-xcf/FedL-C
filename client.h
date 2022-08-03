@@ -22,7 +22,7 @@ public:
 		local_epochs = Local_epochs;
 		batch_size = Batch_size;
 		data.assign(Data.begin(), Data.end());
-		//创建线程
+		//创建线程或进程
 
 	}
 	bool  send_para();                   //通过模型指针调用模型中的获取参数的函数，并向服务端发送训练好的参数
